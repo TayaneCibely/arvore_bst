@@ -78,20 +78,30 @@ int numero_primo(int num) {
     return 1;
 }
 
-arvore sucessor_bst(arvore raiz, int valor) {
+arvore sucessor_bst(int valor, arvore raiz) {
     if (raiz == NULL) {
         return NULL;
     }
-    if (valor < raiz->valor) {
-        arvore esq = sucessor_bst(raiz->esq, valor);
-        if (esq != NULL) {
-            return esq;
+   arvore sucessor = NULL;
+    arvore atual = raiz;
+    while (atual != NULL) {
+        if (valor < atual->valor) {
+            sucessor = atual;
+            atual = atual->esq;
+        } else if (valor > atual->valor) {
+            atual = atual->dir;
         } else {
-            return raiz;
+            if (atual->dir != NULL) {
+                sucessor = atual->dir;
+                while (sucessor->esq != NULL) {
+                    sucessor = sucessor->esq;
+                }
+            }
+            break;
         }
-    } else {
-        return sucessor_bst(raiz->dir, valor);
     }
+
+    return sucessor;
 }
 
 void imprimir_sucessor(int n, arvore raiz) {
@@ -116,13 +126,13 @@ void caminho_bst(int n, arvore raiz) {
 }
 
 arvore remover_bst(int valor, arvore raiz) {
-    //Remover de uma (sub)·rvore vazia / remover elemento inexistente
+    //Remover de uma (sub)√°rvore vazia / remover elemento inexistente
     if(raiz == NULL) {
         return raiz;
     }
     //Encontrou o elemento
     if(raiz->valor == valor) {
-        //VerificaÁ„o de 0 filhos, 1 filho, 2 filhos
+        //Verifica√ß√£o de 0 filhos, 1 filho, 2 filhos
         //caso 1 - zero filhos
         if(raiz->esq == NULL && raiz->dir == NULL) {
             free(raiz);
@@ -138,7 +148,7 @@ arvore remover_bst(int valor, arvore raiz) {
         //caso 2 (b): exatamente um filho direito
 
         //caso 3: dois filhos
-        //n„o precisa de if
+        //n√£o precisa de if
 
         int maiorValorSubarvoreEsquerda = maior(raiz->esq)->valor;
         raiz->valor = maiorValorSubarvoreEsquerda;
@@ -149,7 +159,7 @@ arvore remover_bst(int valor, arvore raiz) {
     if(valor > raiz->valor) {
        raiz->dir = remover_bst(valor, raiz->dir);
     } else {
-        //simÈtrico
+        //sim√©trico
     }
     return raiz;
 }
@@ -185,7 +195,7 @@ arvore podar_bst(int valor, arvore raiz) {
         raiz->dir = podar_bst(valor, raiz->dir);
     } else {
         // Caso chegue aqui encontrou o valor
-        // Abaixo do valor, ser· podado
+        // Abaixo do valor, ser√° podado
         if (raiz->esq != NULL) {
             free(raiz->esq);
             raiz->esq = NULL;
@@ -205,14 +215,14 @@ void reajustar_bst(arvore raiz, int percentual) {
     // Aplicar reajuste, passar como int
     raiz->valor += (int)(raiz->valor * (percentual / 100.0));
 
-    // Recurs„o esq, dir
+    // Recurs√£o esq, dir
     reajustar_bst(raiz->esq, percentual);
     reajustar_bst(raiz->dir, percentual);
 }
 
 int existe_bst(arvore raiz, int chave) {
     if (raiz == NULL) {
-        return 0; // Chave n„o encontrada
+        return 0; // Chave n√£o encontrada
     }
 
     if (chave < raiz->valor) {
